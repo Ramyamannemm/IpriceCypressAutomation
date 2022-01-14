@@ -11,7 +11,7 @@ Then('verify the count of best deals available as {string}', (best_deals_expecte
       })
     })
       
-Then('verify the count of items available are {string}', (best_deals_expected_length) => {
+Then('verify the count of items available in top trending items are {string}', (best_deals_expected_length) => {
           cy.contains("Top Trending Products").parent().within(() => {
               cy.get('a').should('have.length',best_deals_expected_length)
        })
@@ -51,16 +51,29 @@ And('verify all top stores urls are accessible', () => {
     )
   })
    .each(store => {
+     cy.log(store)
     cy.location('pathname').should('eq', `/coupons/`)
-      if(cy.contains(store))
-      {
-        cy.contains(store).parent().siblings().click()
-       const store1=store.toLowerCase()
-       cy.location('pathname').should('eq', `/coupons/${store1}/`)
-      cy.go('back')
-      cy.wait(2000)
-      cy.console("what is wrong")
-      }
+    if(store != "[CNY Lazada App Voucher Code] RM30 OFF Sitewide Orders For AmBank Cardholders")
+    {
+    cy.get('p[title*="'+store+'"]').its('length').then((size)=>{
+      if(size > 1)
+      cy.get('p[title="'+store+'"]').siblings().should("be.visible").click()
+      else
+      cy.get('p[title*="'+store+'"]').siblings().should("be.visible").click()
+    })
+   }
+    const store1=store.toLowerCase()
+    const pathname=cy.location('pathname').then(($pathname)=>{
+      
+      if($pathname.includes('-'))
+      $pathname.replace('-',' ')
+      return($pathname)
+    })
+    expect(pathname=='/coupons/${store1}/')
+    if(store != "[CNY Lazada App Voucher Code] RM30 OFF Sitewide Orders For AmBank Cardholders")
+    cy.go('back')
+    else
+    return false
     
    })
  
