@@ -59,7 +59,7 @@ And('verify all top stores urls are accessible', () => {
        cy.location('pathname').should('eq', `/coupons/${store1}/`)
       cy.go('back')
       cy.wait(2000)
-      cy.console("what ")
+      cy.console("what is wrong")
       }
     
    })
